@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After the Coach · Teaching Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* TL Primary Brand Colors */
+    --navy: #1C4251;          /* Blue Dianne — nav, hero, footer */
+    --coral: #F16C3B;         /* Coral — CTAs, accents, active states */
+    --teal: #39A298;          /* Keppel — model zone, La Joya, success */
+    --blue: #009DD7;          /* Curious Blue — links, tags, interactive */
+    --purple: #C96BF5;        /* Heliotrope — DCPS, cross-district thread */
+
+    /* TL Blue Tints — structural surfaces and backgrounds */
+    --blue-light: #40B6E1;    /* Shakespeare — secondary interactive */
+    --blue-mid: #0A7FAA;      /* Deep Cerulean — hover states */
+    --blue-dark: #13617E;     /* Blumine — deep accent */
+    --blue-pale: #80CEEB;     /* Seagull — subtle tint surfaces */
+    --blue-wash: #BFE7F5;     /* French Pass — lightest tint, card bg */
+
+    /* Derived surfaces */
+    --navy-dim: rgba(28,66,81,0.06);
+    --teal-wash: rgba(57,162,152,0.1);
+    --coral-wash: rgba(241,108,59,0.1);
+    --blue-wash-soft: rgba(0,157,215,0.08);
+    --purple-wash: rgba(201,107,245,0.1);
+
+    --text: #1a1a1a;
+    --text-muted: #6b7280;
+    --text-light: #9ca3af;
+    --border: rgba(0,0,0,0.08);
+    --border-mid: rgba(0,0,0,0.12);
+    --bg: #f8f7f5;
+    --white: #ffffff;
+    --tag-lj-bg: #BFE7F5; --tag-lj: #0A7FAA;       /* La Joya: French Pass bg, Deep Cerulean text */
+    --tag-d75-bg: #BFE7F5; --tag-d75: #13617E;      /* D75: French Pass bg, Blumine text */
+    --tag-tr-bg: rgba(241,108,59,0.12); --tag-tr: #C04A18;   /* Transfer: coral wash, dark coral */
+    --tag-dc-bg: rgba(201,107,245,0.12); --tag-dc: #8B3DB8;  /* DCPS: heliotrope wash, deep purple */
+    --tag-purple-bg: rgba(201,107,245,0.12); --tag-purple: #8B3DB8; /* purple zone pill */
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Poppins', sans-serif; font-weight: 300; color: var(--text); background: var(--bg); font-size: 15px; line-height: 1.7; }
+
+  /* NAV */
+  nav { background: var(--navy); padding: 0 48px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; height: 56px; }
+  .nav-brand { color: #fff; font-size: 13px; font-weight: 500; letter-spacing: 0.3px; display: flex; align-items: center; gap: 10px; }
+  .nav-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--coral); }
+  .nav-links { display: flex; gap: 2px; }
+  .nav-links button { background: none; border: none; color: rgba(255,255,255,0.6); font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 300; cursor: pointer; padding: 6px 12px; border-radius: 4px; transition: all 0.15s; }
+  .nav-links button:hover { color: #fff; background: rgba(255,255,255,0.08); }
+  .nav-links button.active { color: #fff; background: rgba(255,255,255,0.12); }
+
+  /* PAGES */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* HERO */
+  .hero { background: var(--navy); padding: 64px 48px 72px; }
+  .hero-eye { font-size: 10px; color: var(--teal); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 500; margin-bottom: 16px; }
+  .hero-h { font-size: 40px; font-weight: 600; color: #fff; line-height: 1.2; max-width: 600px; margin-bottom: 18px; }
+  .hero-h span { color: var(--coral); }
+  .hero-sub { font-size: 14px; color: rgba(255,255,255,0.65); max-width: 520px; line-height: 1.8; margin-bottom: 28px; }
+  .hero-ctas { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn-primary { background: var(--coral); color: #fff; border: none; padding: 11px 22px; border-radius: 6px; font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: background 0.15s; }
+  .btn-primary:hover { background: #d4572e; }
+  .btn-ghost { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.85); border: 0.5px solid rgba(255,255,255,0.2); padding: 11px 22px; border-radius: 6px; font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 300; cursor: pointer; transition: all 0.15s; }
+  .btn-ghost:hover { background: rgba(255,255,255,0.14); }
+
+  /* BODY CONTAINER */
+  .body { padding: 40px 48px 64px; }
+  .body-inner { max-width: 1100px; margin: 0 auto; }
+
+  /* LABELS */
+  .sec-label { font-size: 10px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--text-light); margin-bottom: 16px; }
+
+  /* GRIDS */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
+
+  /* CARDS */
+  .card { background: var(--white); border: 0.5px solid var(--border); border-radius: 12px; padding: 22px 24px; }
+  .card-eye { font-size: 10px; font-weight: 500; letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 9px; }
+  .card-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 8px; line-height: 1.45; }
+  .card-body { font-size: 12px; color: var(--text-muted); line-height: 1.7; }
+  .chip-row { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 12px; }
+  .chip { background: var(--bg); border-radius: 4px; padding: 4px 9px; font-size: 11px; color: var(--text-muted); font-weight: 300; }
+  .chip strong { color: var(--text); font-weight: 500; }
+
+  /* PROBLEM CARDS — HOME GRID */
+  .prob-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px; }
+  .prob-card { background: var(--white); border: 0.5px solid var(--border); border-radius: 12px; padding: 22px 24px; cursor: pointer; position: relative; overflow: hidden; transition: border-color 0.15s, transform 0.15s; }
+  .prob-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .pc-coral::before { background: var(--coral); }
+  .pc-teal::before { background: var(--teal); }
+  .pc-blue::before { background: var(--blue); }
+  .prob-card:hover { border-color: var(--border-mid); transform: translateY(-1px); }
+  .pc-num { font-size: 10px; color: var(--text-light); letter-spacing: 0.5px; margin-bottom: 10px; font-weight: 400; }
+  .pc-q { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.5; margin-bottom: 9px; }
+  .pc-desc { font-size: 12px; color: var(--text-muted); line-height: 1.65; }
+  .pc-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 14px; border-top: 0.5px solid var(--border); }
+  .pc-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+  .pc-tag { font-size: 10px; padding: 2px 7px; border-radius: 4px; font-weight: 400; }
+  .tag-lj { background: #BFE7F5; color: #0A7FAA; }
+  .tag-d75 { background: #BFE7F5; color: #13617E; }
+  .tag-tr { background: rgba(241,108,59,0.12); color: #C04A18; }
+  .tag-dc { background: rgba(201,107,245,0.12); color: #8B3DB8; }
+  .pc-arr { color: var(--coral); font-size: 14px; font-weight: 400; }
+
+  /* DIVIDER */
+  .divhr { border: none; border-top: 0.5px solid var(--border); margin: 32px 0; }
+
+  /* PROBLEM PAGE */
+  .prob-hero { background: var(--navy); padding: 44px 48px 52px; }
+  .prob-hero .hero-h { font-size: 26px; }
+  .breadcrumb { font-size: 11px; color: var(--text-muted); margin-bottom: 20px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .bc-link { color: var(--blue); cursor: pointer; font-weight: 400; }
+  .bc-link:hover { text-decoration: underline; }
+  .jump-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 28px; flex-wrap: wrap; }
+  .jump-label { font-size: 11px; color: var(--text-muted); }
+  .jump-chip { font-size: 11px; padding: 5px 12px; border-radius: 20px; border: 0.5px solid var(--border-mid); color: var(--text-muted); cursor: pointer; background: var(--white); transition: all 0.15s; font-weight: 400; }
+  .jump-chip:hover { border-color: var(--navy); color: var(--navy); }
+  .jump-chip.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .zone { margin-bottom: 32px; }
+  .zone-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .zone-pill { font-size: 10px; font-weight: 500; letter-spacing: 0.7px; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; }
+  .zp-model { background: #BFE7F5; color: #0A7FAA; }    /* French Pass bg, Deep Cerulean text — Keppel model zone */
+  .zp-tools { background: #BFE7F5; color: #13617E; }    /* French Pass bg, Blumine text — Curious Blue tools zone */
+  .zp-evidence { background: rgba(201,107,245,0.12); color: #8B3DB8; }  /* Heliotrope wash — evidence zone */
+  .zone-desc { font-size: 12px; color: var(--text-muted); }
+  .model-block { background: var(--blue-wash); border-left: 3px solid var(--teal); border-radius: 0 8px 8px 0; padding: 16px 20px; margin-bottom: 10px; border-top: 0.5px solid var(--border); border-right: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border); }
+  .mb-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 5px; }
+  .mb-body { font-size: 12px; color: var(--text-muted); line-height: 1.7; }
+  .tool-card { background: var(--white); border: 0.5px solid var(--border); border-radius: 12px; padding: 16px 20px; display: flex; gap: 14px; align-items: flex-start; margin-bottom: 10px; }
+  .tool-icon { width: 34px; height: 34px; min-width: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  .ti-teal { background: #BFE7F5; }
+  .ti-blue { background: #BFE7F5; }
+  .tool-body { flex: 1; }
+  .tool-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .tool-desc { font-size: 12px; color: var(--text-muted); line-height: 1.65; }
+  .tool-tag { display: inline-block; font-size: 10px; margin-top: 6px; padding: 2px 8px; border-radius: 4px; font-weight: 400; }
+  .tt-lj { background: #BFE7F5; color: #0A7FAA; }     /* French Pass / Deep Cerulean */
+  .tt-d75 { background: #BFE7F5; color: #13617E; }    /* French Pass / Blumine */
+  .ev-card { background: var(--white); border: 0.5px solid var(--border); border-radius: 12px; padding: 18px 22px; margin-bottom: 10px; cursor: pointer; transition: border-color 0.15s; }
+  .ev-card:hover { border-color: var(--border-mid); }
+  .ev-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 9px; }
+  .ev-district { font-size: 10px; font-weight: 500; letter-spacing: 0.7px; text-transform: uppercase; }
+  .ev-arr { font-size: 11px; color: var(--coral); font-weight: 400; white-space: nowrap; margin-left: 12px; }
+  .ev-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 7px; line-height: 1.45; }
+  .ev-body { font-size: 12px; color: var(--text-muted); line-height: 1.65; }
+
+  /* CASE STUDIES INDEX */
+  .cs-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 14px; }
+  .cs-card { background: var(--white); border: 0.5px solid var(--border); border-radius: 12px; padding: 22px 24px; cursor: pointer; position: relative; overflow: hidden; transition: border-color 0.15s, transform 0.15s; }
+  .cs-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .cs-lj::before { background: var(--teal); }       /* Keppel — La Joya */
+  .cs-d75::before { background: var(--blue); }      /* Curious Blue — D75 */
+  .cs-tr::before { background: var(--coral); }      /* Coral — Transfer */
+  .cs-dc::before { background: var(--purple); }     /* Heliotrope — DCPS */
+  .cs-card:hover { border-color: var(--border-mid); transform: translateY(-1px); }
+  .cs-eye { font-size: 10px; font-weight: 500; letter-spacing: 0.7px; text-transform: uppercase; margin-bottom: 9px; }
+  .cs-title { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.45; margin-bottom: 9px; }
+  .cs-desc { font-size: 12px; color: var(--text-muted); line-height: 1.65; }
+  .cs-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 14px; border-top: 0.5px solid var(--border); }
+  .cs-problems { display: flex; gap: 5px; flex-wrap: wrap; }
+  .cs-p { font-size: 10px; padding: 2px 7px; border-radius: 4px; background: var(--bg); color: var(--text-muted); font-weight: 400; }
+  .cs-status { font-size: 11px; color: var(--coral); font-weight: 400; }
+
+  /* LA JOYA PAGE */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 24px; }
+  .stat-card { background: var(--blue-wash); border: 0.5px solid var(--border); border-radius: 10px; padding: 18px; }
+  .stat-label { font-size: 10px; color: var(--text-light); margin-bottom: 8px; line-height: 1.4; font-weight: 400; }
+  .stat-val { font-size: 22px; font-weight: 600; color: var(--text); }
+  .stat-sub { font-size: 11px; color: var(--text-muted); margin-top: 3px; font-weight: 300; }
+
+  /* MODEL PAGE */
+  .principle-card { background: var(--white); border: 0.5px solid var(--border); border-radius: 12px; padding: 22px 24px; position: relative; overflow: hidden; }
+  .principle-card::after { content: ''; position: absolute; top: 0; right: 0; width: 3px; bottom: 0; background: var(--teal); border-radius: 0 12px 12px 0; }
+
+  /* TOOLS PAGE */
+  .placeholder { background: var(--white); border: 1px dashed var(--border-mid); border-radius: 12px; padding: 20px; text-align: center; }
+  .ph-t { font-size: 11px; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px; }
+  .ph-d { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+  .ph-n { display: inline-block; margin-top: 10px; font-size: 11px; padding: 3px 10px; border-radius: 4px; background: var(--bg); border: 0.5px solid var(--border); color: var(--text-muted); font-weight: 400; }
+
+  /* BACK BTN */
+  .back-btn { background: none; border: none; font-size: 12px; color: var(--text-muted); cursor: pointer; padding: 0; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 20px; font-family: 'Poppins', sans-serif; font-weight: 300; }
+  .back-btn:hover { color: var(--text); }
+
+  /* FOOTER */
+  footer { background: var(--navy); padding: 28px 48px; display: flex; justify-content: space-between; align-items: center; margin-top: 0; }
+  .ft { color: rgba(255,255,255,0.4); font-size: 11px; font-weight: 300; }
+  .fl { display: flex; gap: 16px; }
+  .fl span { color: rgba(255,255,255,0.6); font-size: 11px; font-weight: 300; }
+
+  /* ENTRY CARDS */
+  .entry-card { background: var(--white); border: 0.5px solid var(--border); border-radius: 12px; padding: 22px 24px; cursor: pointer; transition: border-color 0.15s, transform 0.15s; }
+  .entry-card:hover { border-color: var(--border-mid); transform: translateY(-1px); }
+
+  /* OWNER BADGE */
+  .owner-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 4px; font-size: 11px; margin-top: 10px; font-weight: 400; }
+  .ob-t { background: #BFE7F5; color: #0A7FAA; }
+
+  /* INLINE LINK */
+  .inline-link { color: var(--blue); cursor: pointer; font-size: 11px; font-weight: 400; }
+  .inline-link:hover { text-decoration: underline; }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    .hero, .prob-hero, .body { padding-left: 20px; padding-right: 20px; }
+    .prob-grid, .grid2, .grid3, .grid4, .cs-grid, .stat-grid { grid-template-columns: 1fr; }
+    .hero-h { font-size: 28px; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <div class="nav-dot"></div>
+    After the Coach · Teaching Lab
+  </div>
+  <div class="nav-links">
+    <button onclick="goTo('home')" id="btn-home" class="active">Home</button>
+    <button onclick="goTo('problems')" id="btn-problems">Browse by problem</button>
+    <button onclick="goTo('cases')" id="btn-cases">Case studies</button>
+    <button onclick="goTo('model')" id="btn-model">The model</button>
+    <button onclick="goTo('tools')" id="btn-tools">Tools + artifacts</button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-eye">NYC Solves · Teaching Lab · CPRL Solves Network 2026</div>
+    <div class="hero-h">Coaching ends.<br><span>Does the work?</span></div>
+    <div class="hero-sub">Teaching Lab's integrated model connects whole-group professional learning and job-embedded coaching so that leaders can sustain math improvement independently — after direct support ends. Here's what we learned across four districts, and what you can use.</div>
+    <div class="hero-ctas">
+      <button class="btn-primary" onclick="goTo('problems')">Start with your problem</button>
+      <button class="btn-ghost" onclick="goTo('cases')">Browse case studies</button>
+      <button class="btn-ghost" onclick="goTo('tools')">Go straight to tools</button>
+    </div>
+  </div>
+  <div class="body">
+    <div class="body-inner">
+      <div class="sec-label">Start with the problem you're facing</div>
+      <div class="prob-grid">
+        <div class="prob-card pc-coral" onclick="goToProblem('buyin')">
+          <div class="pc-num">Problem 01</div>
+          <div class="pc-q">Leaders show up once and disappear</div>
+          <div class="pc-desc">Superintendent and principal engagement feels performative or fades after the first session.</div>
+          <div class="pc-foot">
+            <div class="pc-tags"><span class="pc-tag tag-lj">La Joya</span><span class="pc-tag tag-d75">D75</span></div>
+            <div class="pc-arr">→</div>
+          </div>
+        </div>
+        <div class="prob-card pc-teal" onclick="goTo('problems')">
+          <div class="pc-num">Problem 02</div>
+          <div class="pc-q">PLCs form but drift once coaching ends</div>
+          <div class="pc-desc">Learning communities meet but lose connection to HQIM priorities when direct JESP support pulls back.</div>
+          <div class="pc-foot">
+            <div class="pc-tags"><span class="pc-tag tag-lj">La Joya</span><span class="pc-tag tag-tr">Transfer</span></div>
+            <div class="pc-arr">→</div>
+          </div>
+        </div>
+        <div class="prob-card pc-blue" onclick="goTo('problems')">
+          <div class="pc-num">Problem 03</div>
+          <div class="pc-q">PL and coaching feel like separate tracks</div>
+          <div class="pc-desc">What leaders learn in professional learning isn't showing up in what coaches reinforce — or vice versa.</div>
+          <div class="pc-foot">
+            <div class="pc-tags"><span class="pc-tag tag-lj">La Joya</span><span class="pc-tag tag-d75">D75</span><span class="pc-tag tag-tr">Transfer</span></div>
+            <div class="pc-arr">→</div>
+          </div>
+        </div>
+        <div class="prob-card pc-coral" onclick="goTo('problems')">
+          <div class="pc-num">Problem 04</div>
+          <div class="pc-q">We don't know what data signals progress</div>
+          <div class="pc-desc">Implementation is active but there are no agreed checkpoints showing whether leadership engagement is actually driving change.</div>
+          <div class="pc-foot">
+            <div class="pc-tags"><span class="pc-tag tag-lj">La Joya</span><span class="pc-tag tag-d75">D75</span></div>
+            <div class="pc-arr">→</div>
+          </div>
+        </div>
+        <div class="prob-card pc-teal" onclick="goTo('problems')">
+          <div class="pc-num">Problem 05</div>
+          <div class="pc-q">Coaching moves aren't tied to PL priorities</div>
+          <div class="pc-desc">JESPs and coaches pull in different directions. No shared artifact connects what leaders learned to what coaches are reinforcing.</div>
+          <div class="pc-foot">
+            <div class="pc-tags"><span class="pc-tag tag-d75">D75</span><span class="pc-tag tag-dc">DCPS</span></div>
+            <div class="pc-arr">→</div>
+          </div>
+        </div>
+        <div class="prob-card pc-blue" onclick="goTo('problems')">
+          <div class="pc-num">Problem 06</div>
+          <div class="pc-q">Leaders observe but can't act on what they see</div>
+          <div class="pc-desc">Observation cycles happen but leaders lack HQIM-specific knowledge to give targeted instructional feedback afterward.</div>
+          <div class="pc-foot">
+            <div class="pc-tags"><span class="pc-tag tag-lj">La Joya</span><span class="pc-tag tag-tr">Transfer</span></div>
+            <div class="pc-arr">→</div>
+          </div>
+        </div>
+      </div>
+      <div class="divhr"></div>
+      <div class="sec-label">Or browse by what you need</div>
+      <div class="grid3">
+        <div class="entry-card" onclick="goTo('cases')">
+          <div class="card-eye" style="color:#13617E;">For district + school leaders</div>
+          <div class="card-title">See what worked across four districts</div>
+          <div class="card-body">La Joya, D75, Transfer, and DCPS — case studies with outcome data you can bring to your superintendent.</div>
+          <div class="chip-row"><div class="chip">Browse case studies →</div></div>
+        </div>
+        <div class="entry-card" onclick="goTo('tools')">
+          <div class="card-eye" style="color:#0A7FAA;">For JESPs + coaches</div>
+          <div class="card-title">Tools and artifacts you can use right now</div>
+          <div class="card-body">Alignment maps, coaching logs, observation protocols, and goal trackers — all tested in real districts.</div>
+          <div class="chip-row"><div class="chip">Go to tools →</div></div>
+        </div>
+        <div class="entry-card" onclick="goTo('model')">
+          <div class="card-eye" style="color:#8B3DB8;">For anyone new to the model</div>
+          <div class="card-title">Understand the integrated PL + coaching approach</div>
+          <div class="card-body">What TL built, why coherence matters, and how the design principles translate across different district contexts.</div>
+          <div class="chip-row"><div class="chip">Read the model →</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="ft">After the Coach · Teaching Lab · NYC Solves · CPRL Solves Network 2026 · Working prototype — not for external distribution</div>
+    <div class="fl"><span>La Joya</span><span>D75</span><span>Transfer</span><span>DCPS</span></div>
+  </footer>
+</div>
+
+<!-- PROBLEMS INDEX -->
+<div id="page-problems" class="page">
+  <div class="prob-hero hero">
+    <div class="hero-eye">Browse by problem</div>
+    <div class="hero-h" style="font-size:26px;">Find the case study<br>that fits your situation</div>
+    <div class="hero-sub">Six problems, four districts. Click a problem to see what we learned, what tools are available, and where you can find more evidence.</div>
+  </div>
+  <div class="body">
+    <div class="body-inner">
+      <div class="prob-grid">
+        <div class="prob-card pc-coral" onclick="goToProblem('buyin')">
+          <div class="pc-num">Problem 01</div>
+          <div class="pc-q">Leaders show up once and disappear</div>
+          <div class="pc-desc">Superintendent and principal engagement feels performative or fades after the first session.</div>
+          <div class="pc-foot"><div class="pc-tags"><span class="pc-tag tag-lj">La Joya</span><span class="pc-tag tag-d75">D75</span></div><div class="pc-arr">→</div></div>
+        </div>
+        <div class="prob-card pc-teal">
+          <div class="pc-num">Problem 02</div>
+          <div class="pc-q">PLCs form but drift once coaching ends</div>
+          <div class="pc-desc">Learning communities meet but lose connection to HQIM priorities when direct JESP support pulls back.</div>
+          <div class="pc-foot"><div class="pc-tags"><span class="pc-tag tag-lj">La Joya</span><span class="pc-tag tag-tr">Transfer</span></div><div class="pc-arr" style="color:var(--text-light);font-size:11px;">Coming soon</div></div>
+        </div>
+        <div class="prob-card pc-blue">
+          <div class="pc-num">Problem 03</div>
+          <div class="pc-q">PL and coaching feel like separate tracks</div>
+          <div class="pc-desc">What leaders learn in professional learning isn't showing up in what coaches reinforce — or vice versa.</div>
+          <div class="pc-foot"><div class="pc-tags"><span class="pc-tag tag-lj">La Joya</span><span class="pc-tag tag-d75">D75</span><span class="pc-tag tag-tr">Transfer</span></div><div class="pc-arr" style="color:var(--text-light);font-size:11px;">Coming soon</div></div>
+        </div>
+        <div class="prob-card pc-coral">
+          <div class="pc-num">Problem 04</div>
+          <div class="pc-q">We don't know what data signals progress</div>
+          <div class="pc-desc">Implementation is active but there are no agreed checkpoints showing whether leadership engagement is driving change.</div>
+          <div class="pc-foot"><div class="pc-tags"><span class="pc-tag tag-lj">La Joya</span><span class="pc-tag tag-d75">D75</span></div><div class="pc-arr" style="color:var(--text-light);font-size:11px;">Coming soon</div></div>
+        </div>
+        <div class="prob-card pc-teal">
+          <div class="pc-num">Problem 05</div>
+          <div class="pc-q">Coaching moves aren't tied to PL priorities</div>
+          <div class="pc-desc">JESPs and coaches pull in different directions. No shared artifact connects what leaders learned to what coaches are reinforcing.</div>
+          <div class="pc-foot"><div class="pc-tags"><span class="pc-tag tag-d75">D75</span><span class="pc-tag tag-dc">DCPS</span></div><div class="pc-arr" style="color:var(--text-light);font-size:11px;">Coming soon</div></div>
+        </div>
+        <div class="prob-card pc-blue">
+          <div class="pc-num">Problem 06</div>
+          <div class="pc-q">Leaders observe but can't act on what they see</div>
+          <div class="pc-desc">Observation cycles happen but leaders lack HQIM-specific knowledge to give targeted instructional feedback.</div>
+          <div class="pc-foot"><div class="pc-tags"><span class="pc-tag tag-lj">La Joya</span><span class="pc-tag tag-tr">Transfer</span></div><div class="pc-arr" style="color:var(--text-light);font-size:11px;">Coming soon</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="ft">After the Coach · Teaching Lab · CPRL Solves Network 2026</div><div class="fl"><span>La Joya</span><span>D75</span><span>Transfer</span><span>DCPS</span></div></footer>
+</div>
+
+<!-- PROBLEM 01 PAGE -->
+<div id="page-problem-buyin" class="page">
+  <div class="prob-hero hero">
+    <div class="hero-eye">Problem 01 of 06</div>
+    <div class="hero-h" style="font-size:24px;">Leaders show up once<br>and disappear</div>
+    <div class="hero-sub">Superintendent and principal engagement feels performative or fades after the first session. Without sustained leader participation, instructional priorities don't get reinforced and coaching impact doesn't compound.</div>
+  </div>
+  <div class="body">
+    <div class="body-inner">
+      <div class="breadcrumb">
+        <span class="bc-link" onclick="goTo('home')">Home</span>
+        <span>›</span>
+        <span class="bc-link" onclick="goTo('problems')">Browse by problem</span>
+        <span>›</span>
+        <span>Problem 01 · Leaders show up once and disappear</span>
+      </div>
+      <div class="jump-bar">
+        <span class="jump-label">Jump to:</span>
+        <span class="jump-chip active" onclick="activateChip(this)">Understand the model</span>
+        <span class="jump-chip" onclick="activateChip(this)">Find a tool to use</span>
+        <span class="jump-chip" onclick="activateChip(this)">See the evidence</span>
+      </div>
+
+      <div class="zone">
+        <div class="zone-header">
+          <span class="zone-pill zp-model">Understand the model</span>
+          <span class="zone-desc">Why sustained leader engagement is a design problem, not a motivation problem</span>
+        </div>
+        <div class="model-block">
+          <div class="mb-title">The mechanism: structured participation + explicit metrics</div>
+          <div class="mb-body">TL's model treats leader engagement as something that has to be designed into the partnership structure — not hoped for. That means setting a concrete participation target before the work begins (30–35% of coaching visits), anchoring PL and coaching to the standards and frameworks leaders already use, and providing real-time side-by-side coaching during PLCs rather than just pre/post briefings.</div>
+        </div>
+        <div class="model-block">
+          <div class="mb-title">Why this is a coherence problem</div>
+          <div class="mb-body">Leaders disengage when PL feels separate from coaching, and coaching feels separate from their evaluation responsibilities. When all three are explicitly connected — using the same language, the same tools, the same priorities — leaders start to see participation as part of their role, not an add-on to it.</div>
+        </div>
+      </div>
+
+      <div class="divhr"></div>
+
+      <div class="zone">
+        <div class="zone-header">
+          <span class="zone-pill zp-tools">Tools to use</span>
+          <span class="zone-desc">Artifacts tested in La Joya and D75 — adapt for your context</span>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon ti-teal">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="#0F6E56" stroke-width="1.2"/><line x1="5" y1="6" x2="11" y2="6" stroke="#0F6E56" stroke-width="1.2"/><line x1="5" y1="9" x2="9" y2="9" stroke="#0F6E56" stroke-width="1.2"/></svg>
+          </div>
+          <div class="tool-body">
+            <div class="tool-title">Alignment crosswalk</div>
+            <div class="tool-desc">Maps principal standards → teacher practice → student outcomes in one artifact. Gives leaders a visible reason to stay engaged by showing how their participation connects to classroom results.</div>
+            <span class="tool-tag tt-lj">Tested in La Joya · P01, P03, P06</span>
+          </div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon ti-blue">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="#185FA5" stroke-width="1.2"/><line x1="8" y1="5" x2="8" y2="8.5" stroke="#185FA5" stroke-width="1.2"/><circle cx="8" cy="10.5" r="0.8" fill="#185FA5"/></svg>
+          </div>
+          <div class="tool-body">
+            <div class="tool-title">Leader engagement tracker</div>
+            <div class="tool-desc">Tracks leader presence across coaching visits toward the 30–35% target. Shared with district leadership so participation becomes their data, not just the JESP's.</div>
+            <span class="tool-tag tt-d75">Tested in D75 · P01, P04</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divhr"></div>
+
+      <div class="zone">
+        <div class="zone-header">
+          <span class="zone-pill zp-evidence">Evidence from the field</span>
+          <span class="zone-desc">What happened when districts applied this approach</span>
+        </div>
+        <div class="ev-card" onclick="goTo('lajoya')">
+          <div class="ev-top">
+            <div class="ev-district" style="color:#0A7FAA;">La Joya ISD · Proof of concept</div>
+            <div class="ev-arr">Read full case study →</div>
+          </div>
+          <div class="ev-title">Structured coaching tied to clear rubrics moved leaders from passive to independently driving change</div>
+          <div class="ev-body">When Principal Flores was coached through PLC facilitation with explicit metrics, she moved from observer to independently leading data review sessions — and that shift persisted after direct TL support pulled back.</div>
+          <div class="chip-row">
+            <div class="chip">TPESS 5.4: <strong>0–1 → 2+</strong></div>
+            <div class="chip">PLC Rubric: <strong>1 → 3</strong></div>
+            <div class="chip">MAP avg: <strong>+15 pts</strong></div>
+          </div>
+        </div>
+        <div class="ev-card" onclick="goTo('cases')">
+          <div class="ev-top">
+            <div class="ev-district" style="color:#13617E;">District 75 · Primary live case study</div>
+            <div class="ev-arr">Read full case study →</div>
+          </div>
+          <div class="ev-title">Setting a concrete participation target reframed leader presence from optional to expected</div>
+          <div class="ev-body">Defining a 30–35% coaching visit presence target before the partnership launched gave leaders something measurable to commit to and gave the JESP a shared basis for accountability conversations with district leadership.</div>
+          <div class="chip-row">
+            <div class="chip">Target: <strong>30–35%</strong> of coaching visits</div>
+            <div class="chip" style="color:var(--text-light);">In progress · D75</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="ft">After the Coach · Teaching Lab · CPRL Solves Network 2026</div><div class="fl"><span>← <span class="inline-link" onclick="goTo('problems')" style="color:rgba(255,255,255,0.6);">All problems</span></span></div></footer>
+</div>
+
+<!-- CASE STUDIES INDEX -->
+<div id="page-cases" class="page">
+  <div class="hero">
+    <div class="hero-eye">Case studies · Four districts</div>
+    <div class="hero-h" style="font-size:26px;">What the work looked like<br>across contexts</div>
+    <div class="hero-sub">Four districts, one integrated model — applied differently in each context. Each case study is tagged by the problems it speaks to so you can find the evidence most relevant to your situation.</div>
+  </div>
+  <div class="body">
+    <div class="body-inner">
+      <div class="sec-label">Browse all four districts</div>
+      <div class="cs-grid">
+        <div class="cs-card cs-lj" onclick="goTo('lajoya')">
+          <div class="cs-eye" style="color:#0A7FAA;">La Joya ISD · Texas</div>
+          <div class="cs-title">Proof of concept: how structured leadership coaching built independent capacity</div>
+          <div class="cs-desc">TL's most complete case. Principal Flores moved from passive PLC participant to independently driving data review and instructional feedback — with outcome data across leadership, teacher practice, and student learning.</div>
+          <div class="cs-foot">
+            <div class="cs-problems">
+              <span class="cs-p">P01 · Buy-in</span><span class="cs-p">P02 · Sustainability</span><span class="cs-p">P03 · Coherence</span><span class="cs-p">P06 · Observation</span>
+            </div>
+            <span class="cs-status">→</span>
+          </div>
+        </div>
+        <div class="cs-card cs-d75">
+          <div class="cs-eye" style="color:#13617E;">District 75 · NYC Solves</div>
+          <div class="cs-title">Primary live case: integrated PL and coaching in a specialized district context</div>
+          <div class="cs-desc">D75's specialized population makes this a strong test of the model's adaptability. Goal alignment trackers and the JES tracker anchor coherence between whole-group learning and coaching visits.</div>
+          <div class="cs-foot">
+            <div class="cs-problems">
+              <span class="cs-p">P01 · Buy-in</span><span class="cs-p">P03 · Coherence</span><span class="cs-p">P04 · Data</span><span class="cs-p">P05 · Alignment</span>
+            </div>
+            <span class="cs-status" style="color:var(--text-light);font-size:11px;">In progress · Colleen</span>
+          </div>
+        </div>
+        <div class="cs-card cs-tr">
+          <div class="cs-eye" style="color:#C04A18;">Transfer High Schools · NYC Solves</div>
+          <div class="cs-title">Secondary live case: coherence across a transfer school context using Illustrative Mathematics</div>
+          <div class="cs-desc">Transfer shares the IM thread with D75 — making the cross-context replicability argument stronger. Different student population, same integrated model, same curriculum anchor.</div>
+          <div class="cs-foot">
+            <div class="cs-problems">
+              <span class="cs-p">P02 · Sustainability</span><span class="cs-p">P03 · Coherence</span><span class="cs-p">P06 · Observation</span>
+            </div>
+            <span class="cs-status" style="color:var(--text-light);font-size:11px;">In progress · Colleen</span>
+          </div>
+        </div>
+        <div class="cs-card cs-dc">
+          <div class="cs-eye" style="color:#8B3DB8;">DCPS · Washington D.C.</div>
+          <div class="cs-title">Emerging case: cross-district replication beyond the NYC Solves ecosystem</div>
+          <div class="cs-desc">DCPS extends the model beyond NYC — strengthening the argument that coherent PL and coaching integration is not context-specific. Shares the IM thread with D75 and Transfer.</div>
+          <div class="cs-foot">
+            <div class="cs-problems">
+              <span class="cs-p">P03 · Coherence</span><span class="cs-p">P05 · Alignment</span>
+            </div>
+            <span class="cs-status" style="color:var(--text-light);font-size:11px;">In development · Marika</span>
+          </div>
+        </div>
+      </div>
+      <div class="divhr"></div>
+      <div class="sec-label">The connective thread</div>
+      <div class="card">
+        <div class="card-eye" style="color:#8B3DB8;">Cross-district replicability · D75 · Transfer · DCPS</div>
+        <div class="card-title">All three NYC Solves districts use Illustrative Mathematics — and that's not coincidental</div>
+        <div class="card-body">When the same curriculum anchors coaching and PL across D75, Transfer, and DCPS, coherence becomes easier to design and easier to sustain. The IM thread is part of what makes the cross-context argument: TL's model isn't tied to one district's conditions — it's tied to deliberate design choices that any IM-implementing district can replicate.</div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="ft">After the Coach · Teaching Lab · CPRL Solves Network 2026</div><div class="fl"><span>La Joya</span><span>D75</span><span>Transfer</span><span>DCPS</span></div></footer>
+</div>
+
+<!-- LA JOYA CASE STUDY -->
+<div id="page-lajoya" class="page">
+  <div class="hero">
+    <div class="hero-eye">Case study · La Joya ISD · Texas · Proof of concept</div>
+    <div class="hero-h" style="font-size:24px;">How structured leadership coaching<br>built independent capacity</div>
+    <div class="hero-sub">When leaders were given structured coaching tied to clear metrics and curriculum-aligned tools, they moved from passive participants to independently driving instructional change — and the work persisted after direct TL support pulled back.</div>
+  </div>
+  <div class="body">
+    <div class="body-inner">
+      <div class="breadcrumb">
+        <span class="bc-link" onclick="goTo('home')">Home</span><span>›</span>
+        <span class="bc-link" onclick="goTo('cases')">Case studies</span><span>›</span>
+        <span>La Joya ISD</span>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-label">TPESS 5.4 · all leaders</div>
+          <div class="stat-val">0–1 → 2+</div>
+          <div class="stat-sub">Needs improvement to proficient</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">PLC Vertical Rubric · all leaders</div>
+          <div class="stat-val">1 → 3</div>
+          <div class="stat-sub">Reached proficient</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">MAP Reading · K–5 avg</div>
+          <div class="stat-val">+15 pts</div>
+          <div class="stat-sub">3rd grade +21 pts</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Spot Check · schools at standard</div>
+          <div class="stat-val">+24%</div>
+          <div class="stat-sub">BOY to MOY increase</div>
+        </div>
+      </div>
+      <div class="divhr"></div>
+      <div class="sec-label">What TL did</div>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-eye" style="color:#0A7FAA;">Codified leadership learning community</div>
+          <div class="card-title">Coached Principal Flores through structured PLC facilitation</div>
+          <div class="card-body">Real-time side-by-side coaching during PLCs — not just pre/post briefings — built capacity faster. The focus was data analysis tied directly to Bluebonnet HQIM priorities, using TPESS 5.4 and the PLC Vertical Rubric as shared metrics.</div>
+        </div>
+        <div class="card">
+          <div class="card-eye" style="color:#0A7FAA;">Leadership engagement with JESP</div>
+          <div class="card-title">Leaders observed and debriefed alongside TL coaches</div>
+          <div class="card-body">Joint observation cycles using Spot Check and TTESS gave leaders a structured lens for classroom visits. After coaching, leaders independently identified 2 of 3 effective facilitation actions — a measurable shift from baseline.</div>
+        </div>
+      </div>
+      <div class="divhr"></div>
+      <div class="sec-label">The artifact that made it work</div>
+      <div class="card">
+        <div class="card-eye" style="color:#0A7FAA;">Tools that connect PL to coaching</div>
+        <div class="card-title">The Alignment Crosswalk mapped the whole system in one place</div>
+        <div class="card-body">TPESS principal standards → teacher practice (TTESS/Spots) → student outcomes (DOLs, Unit Assessments, STAAR Blueprint) — all in one coherent artifact. Leaders could see how their participation connected to classroom results, making the model legible rather than just logical. A 47% reduction in schools with no evidence of curriculum routines followed.</div>
+        <div class="chip-row">
+          <div class="chip" style="cursor:pointer;">↓ Download: Alignment Crosswalk</div>
+          <div class="chip" style="cursor:pointer;">↓ Download: Coaching Action Plan example</div>
+        </div>
+      </div>
+      <div class="divhr"></div>
+      <div class="sec-label">Problems this case speaks to</div>
+      <div class="grid3">
+        <div class="prob-card pc-coral" style="cursor:default;">
+          <div class="pc-num">Problem 01</div>
+          <div class="pc-q">Leaders show up once and disappear</div>
+          <div class="pc-foot"><div class="pc-tags"><span class="pc-tag tag-lj">La Joya</span></div><span class="inline-link" onclick="goToProblem('buyin')">See solutions →</span></div>
+        </div>
+        <div class="prob-card pc-teal" style="cursor:default;">
+          <div class="pc-num">Problem 02</div>
+          <div class="pc-q">PLCs form but drift once coaching ends</div>
+          <div class="pc-foot"><div class="pc-tags"><span class="pc-tag tag-lj">La Joya</span></div><span class="inline-link" onclick="goTo('problems')">See solutions →</span></div>
+        </div>
+        <div class="prob-card pc-blue" style="cursor:default;">
+          <div class="pc-num">Problem 06</div>
+          <div class="pc-q">Leaders observe but can't act on what they see</div>
+          <div class="pc-foot"><div class="pc-tags"><span class="pc-tag tag-lj">La Joya</span></div><span class="inline-link" onclick="goTo('problems')">See solutions →</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="ft">After the Coach · Teaching Lab · CPRL Solves Network 2026</div><div class="fl"><span class="inline-link" onclick="goTo('cases')" style="color:rgba(255,255,255,0.6);">← All case studies</span></div></footer>
+</div>
+
+<!-- THE MODEL -->
+<div id="page-model" class="page">
+  <div class="hero">
+    <div class="hero-eye">The model · Organizational leadership · Tiara Toney</div>
+    <div class="hero-h" style="font-size:26px;">The conditions that make<br>coherence possible</div>
+    <div class="hero-sub">TL's integrated model isn't a curriculum or a program — it's a set of design principles for how professional learning and job-embedded coaching can be deliberately connected so that leaders build lasting capacity, not just temporary compliance.</div>
+  </div>
+  <div class="body">
+    <div class="body-inner">
+      <div class="owner-badge ob-t" style="margin-bottom:24px;">Tiara Toney · section lead</div>
+      <div class="sec-label">Four design principles</div>
+      <div class="grid2">
+        <div class="principle-card">
+          <div class="card-eye" style="color:#8B3DB8;">Design principle 01</div>
+          <div class="card-title">Coherence is designed, not assumed</div>
+          <div class="card-body">PL and coaching are aligned by explicit intention — the same priorities appear in learning sessions and in coaching moves. TL builds that alignment before a cycle begins, not after.</div>
+          <div class="chip-row"><div class="chip">Content to expand · Tiara</div></div>
+        </div>
+        <div class="principle-card">
+          <div class="card-eye" style="color:#8B3DB8;">Design principle 02</div>
+          <div class="card-title">Leaders are learners, not just sponsors</div>
+          <div class="card-body">TL's model positions school and district leaders as active participants in professional learning — not approvers of it. That participation is structured, measured, and expected from day one.</div>
+          <div class="chip-row"><div class="chip">Content to expand · Tiara</div></div>
+        </div>
+        <div class="principle-card">
+          <div class="card-eye" style="color:#8B3DB8;">Design principle 03</div>
+          <div class="card-title">Sustainability is built in from the start</div>
+          <div class="card-body">The model is designed to transfer ownership to leaders over time. Not as a hope — as a planned design feature with explicit handoff structures and internal capacity targets.</div>
+          <div class="chip-row"><div class="chip">Content to expand · Tiara</div></div>
+        </div>
+        <div class="principle-card">
+          <div class="card-eye" style="color:#8B3DB8;">Design principle 04</div>
+          <div class="card-title">Problem first, model second</div>
+          <div class="card-body">This site leads with practitioner problems, not TL's approach. Districts and leaders are the primary actors — TL's model is the supporting context, not the headline.</div>
+          <div class="chip-row"><div class="chip">Content to expand · Tiara</div></div>
+        </div>
+      </div>
+      <div class="divhr"></div>
+      <div class="sec-label">Planning tools and artifacts</div>
+      <div class="grid3">
+        <div class="placeholder">
+          <div class="ph-t" style="color:#0A7FAA;">PL-to-coaching alignment map</div>
+          <div class="ph-d">A planning tool showing how whole-group PL priorities connect to coaching goals for that cycle.</div>
+          <div class="ph-n">Artifact to add · Tiara</div>
+        </div>
+        <div class="placeholder">
+          <div class="ph-t" style="color:#0A7FAA;">Session design template</div>
+          <div class="ph-d">The template TL uses to design leader PL sessions explicitly linked to upcoming coaching cycles.</div>
+          <div class="ph-n">Artifact to add · Tiara</div>
+        </div>
+        <div class="placeholder">
+          <div class="ph-t" style="color:#0A7FAA;">Coaching-to-PL follow-up protocol</div>
+          <div class="ph-d">How coaching observations feed back into the next PL session — closing the loop between the two systems.</div>
+          <div class="ph-n">Artifact to add · Tiara</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="ft">After the Coach · Teaching Lab · CPRL Solves Network 2026</div><div class="fl"><span>Tiara Toney · Organizational leadership</span></div></footer>
+</div>
+
+<!-- TOOLS -->
+<div id="page-tools" class="page">
+  <div class="hero">
+    <div class="hero-eye">Tools + artifacts · Ready to use</div>
+    <div class="hero-h" style="font-size:26px;">What we built,<br>tested, and can share</div>
+    <div class="hero-sub">These tools were developed and refined across La Joya, D75, Transfer, and DCPS. Each one is tagged by the problem it addresses and the district where it was tested.</div>
+  </div>
+  <div class="body">
+    <div class="body-inner">
+      <div class="sec-label">Tools that connect PL to coaching</div>
+      <div class="tool-card">
+        <div class="tool-icon ti-teal"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="#0F6E56" stroke-width="1.2"/><line x1="5" y1="6" x2="11" y2="6" stroke="#0F6E56" stroke-width="1.2"/><line x1="5" y1="9" x2="9" y2="9" stroke="#0F6E56" stroke-width="1.2"/></svg></div>
+        <div class="tool-body">
+          <div class="tool-title">Alignment crosswalk</div>
+          <div class="tool-desc">Maps principal standards → teacher practice → student outcomes. Makes the through-line from PL to coaching to classroom visible in one artifact.</div>
+          <span class="tool-tag tt-lj">La Joya · P01, P03, P06</span>
+        </div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon ti-blue"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="#185FA5" stroke-width="1.2"/><line x1="5" y1="6" x2="11" y2="6" stroke="#185FA5" stroke-width="1.2"/><line x1="5" y1="9" x2="11" y2="9" stroke="#185FA5" stroke-width="1.2"/><line x1="5" y1="12" x2="8" y2="12" stroke="#185FA5" stroke-width="1.2"/></svg></div>
+        <div class="tool-body">
+          <div class="tool-title">Goal alignment tracker</div>
+          <div class="tool-desc">Coaching moves log tied to NYC Solves priorities. Keeps coaching visits anchored to the same goals leaders built in whole-group PL.</div>
+          <span class="tool-tag tt-d75">D75 · P03, P05</span>
+        </div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon ti-teal"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="#0F6E56" stroke-width="1.2"/><polyline points="5.5,8 7.5,10 10.5,6" stroke="#0F6E56" stroke-width="1.2" fill="none"/></svg></div>
+        <div class="tool-body">
+          <div class="tool-title">JES implementation tracker</div>
+          <div class="tool-desc">District-specific tracker for monitoring progress across coaching visits. Shared with district leadership so implementation data becomes theirs to act on.</div>
+          <span class="tool-tag tt-d75">D75 · P04</span>
+        </div>
+      </div>
+      <div class="divhr"></div>
+      <div class="sec-label">More tools coming as case studies develop</div>
+      <div class="grid3">
+        <div class="placeholder">
+          <div class="ph-t" style="color:#13617E;">Transfer · Observation protocol</div>
+          <div class="ph-d">NYC Solves observation and feedback protocols grounded in IM curriculum — adapted for transfer school context.</div>
+          <div class="ph-n">In progress · Colleen</div>
+        </div>
+        <div class="placeholder">
+          <div class="ph-t" style="color:#8B3DB8;">DCPS · PL-to-coaching alignment map</div>
+          <div class="ph-d">Session design template linking whole-group PL priorities to upcoming coaching cycle goals.</div>
+          <div class="ph-n">In development · Marika</div>
+        </div>
+        <div class="placeholder">
+          <div class="ph-t" style="color:#0A7FAA;">La Joya · Coaching action plan</div>
+          <div class="ph-d">Structured leadership coaching cycle example — the LJISD Flores plan annotated for replication.</div>
+          <div class="ph-n">To link · Marika</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="ft">After the Coach · Teaching Lab · CPRL Solves Network 2026</div><div class="fl"><span>La Joya</span><span>D75</span><span>Transfer</span><span>DCPS</span></div></footer>
+</div>
+
+<script>
+  var navMap = {
+    home: 'btn-home',
+    problems: 'btn-problems',
+    'problem-buyin': 'btn-problems',
+    cases: 'btn-cases',
+    lajoya: 'btn-cases',
+    model: 'btn-model',
+    tools: 'btn-tools'
+  };
+
+  function goTo(id) {
+    document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+    var el = document.getElementById('page-' + id);
+    if (el) { el.classList.add('active'); window.scrollTo(0, 0); }
+    document.querySelectorAll('.nav-links button').forEach(function(b) { b.classList.remove('active'); });
+    var btnId = navMap[id];
+    if (btnId) { var btn = document.getElementById(btnId); if (btn) btn.classList.add('active'); }
+  }
+
+  function goToProblem(id) {
+    goTo('problem-' + id);
+  }
+
+  function activateChip(el) {
+    document.querySelectorAll('.jump-chip').forEach(function(c) { c.classList.remove('active'); });
+    el.classList.add('active');
+  }
+</script>
+</body>
+</html>
